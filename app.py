@@ -47,7 +47,7 @@ if uploaded_file is not None:
 
     if st.sidebar.button("Show Analysis"):
         num_messages,num_words,num_media,num_links=helper.fetch_stats(selected_user,df)
-        st.title("top Statistics")
+        st.title("Top Statistics")
         col1 , col2 , col3 , col4 = st.columns(4)
         with col1:
             st.header("Total Messages")
