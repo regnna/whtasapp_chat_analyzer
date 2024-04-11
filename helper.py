@@ -47,11 +47,16 @@ def fetch_stats(selected_user, df):
 
 
 def fetch_busy_user(df):
+    
+    # Assuming 'df' is your DataFrame and 'column' is the column of interest
+    df = df.drop(df[df['user'] =='group notification'].index)
+    # print("df", df)
     x = df['user'].value_counts()
     top_7=x.head(7)
     # st.title(x)
     new_df = round((df['user'].value_counts() / df.shape[0]) * 100, 2).reset_index().rename(
         columns={'index': 'name', 'user': 'percent'})
+    # print(new_df,top_7)
     return top_7, new_df
 
 def emoji_helper(selected_user,df):
@@ -86,6 +91,37 @@ def activity_hit_map(selected_user,df):
         df=df[df['user']==selected_user]
     # plt.figure(figsize=(20, 6))
     activity_heatmap=df.pivot_table(index="day_name", columns='period', values='message', aggfunc='count').fillna(0)
+    activity_heatmap.index.rename('day name',inplace=True)
+    new_columns = {
+    '00_1': '12am-1am',
+    '1_2': '1am-2am',
+    '2_3': '2am-3am',
+    '3_4': '3am-4am',
+    '4_5': '4am-5am',
+    '5_6': '5am-6am',
+    '6_7': '6am-7am',
+    '7_8': '7am-8am',
+    '8_9': '8am-9am',
+    '9_10': '9am-10am',
+    '10_11': '10am-11am',
+    '11_12': '11am-12pm',
+    '12_13': '12pm-1pm',
+    '13_14': '1pm-2pm',
+    '14_15': '2pm-3pm',
+    '15_16': '3pm-4pm',
+    '16_17': '4pm-5pm',
+    '17_18': '5pm-6pm',
+    '18_19': '6pm-7pm',
+    '19_20': '7pm-8pm',
+    '20_21': '8pm-9pm',
+    '21_22': '9pm-10pm',
+    '22_23': '10pm-11pm',
+    '23_00': '11pm-12am'
+    }
+
+    activity_heatmap.rename(columns=new_columns, inplace=True)
+
+    # print(activity_heatmap)
     return activity_heatmap
     # plt.yticks(rotation='horizontal')
     # plt.show()
@@ -113,7 +149,7 @@ def word_usage(selected_user, df):
         df = df[df['user'] == selected_user]
     temp = df[df['user'] != 'group notification']
     # temp = temp[temp['message'] != '<Media omitted>\n']
-    # temp = temp[temp['message'] != 'This message was deleted\n']
+    temp = temp[temp['message'] != 'This message was deleted\n']
     f = open('stopwords.txt', 'r')
     stopwords = f.read()
     pwords = []
